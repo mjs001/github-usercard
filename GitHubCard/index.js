@@ -2,7 +2,62 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+function gitHubCard(infoUrl) {
+  const newCard = document.createElement("div"),
+  newImg = document.createElement("img"), 
+  newH1 = document.createElement("h1"),
+  newH2 = document.createElement("h2"),
+  newLocation = document.createElement("p"),
+  newProfile = document.createElement("p"),
+  newFollowers = document.createElement("p"),
+  newFollowing = document.createElement("p"),
+  newBio = document.createElement("p");
 
+  newCard.classList.add(".card");
+  newCard.classList.add(".cards");
+  newCard.appendChild(newImg);
+  newCard.appendChild(newH1);
+  newCard.appendChild(newH2);
+  newCard.appendChild(newLocation);
+  newCard.appendChild(newProfile);
+  newCard.appendChild(newFollowers);
+  newCard.appendChild(newFollowing);
+  newCard.appendChild(newBio);
+  newCard.src = infoUrl
+  
+
+  return newCard;
+}
+
+
+axios.get("https://api.github.com/users/mjs001")
+.then(response => {
+  response = Object.values(response.data)
+response.forEach(item => {
+  const eachNewCard = gitHubCard(item)
+  entryPoint.appendChild(eachNewCard)
+
+})
+})
+
+.catch(error => {
+  console.log("the data was not returned, you have an error!", error)
+})
+
+const entryPoint =
+document.querySelector(".container");
+
+const followersArray = [];
+
+axios.get("https://api.github.com/users/mjs001/followers ")
+.then(response2 => {
+  response2 = Object.values(response2.data)
+response2.forEach(item2 => {
+  const eachNewCard2 = gitHubCard(item2)
+  entryPoint.appendChild(eachNewCard2)
+  response2.push(followersArray);
+})
+})
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -24,7 +79,7 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+//const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
