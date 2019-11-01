@@ -2,62 +2,86 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-function gitHubCard(infoUrl) {
-  const newCard = document.createElement("div"),
+function gitHubCard(data) {
+  console.log(data)
+  let newCard = document.createElement("div"),
   newImg = document.createElement("img"), 
-  newH1 = document.createElement("h1"),
-  newH2 = document.createElement("h2"),
+  cardInfo = document.createElement("div"),
+  newH3 = document.createElement("h3"),
+  newUsername = document.createElement("p")
   newLocation = document.createElement("p"),
   newProfile = document.createElement("p"),
+  newProfileLink = document.createElement("a"),
   newFollowers = document.createElement("p"),
   newFollowing = document.createElement("p"),
   newBio = document.createElement("p");
 
-  newCard.classList.add(".card");
-  newCard.classList.add(".cards");
-  newCard.appendChild(newImg);
-  newCard.appendChild(newH1);
-  newCard.appendChild(newH2);
-  newCard.appendChild(newLocation);
-  newCard.appendChild(newProfile);
-  newCard.appendChild(newFollowers);
-  newCard.appendChild(newFollowing);
-  newCard.appendChild(newBio);
-  newCard.src = infoUrl
+  newImg.src = data.data.avatar_url;
+  newH3.textContent = data.data.name;
+  newUsername.textContent = data.data.login;
+  newLocation.textContent = "Location: " + data.data.location;
+  newProfile.textContent = "Profile: " + data.data.url;
+  newFollowers.textContent = "Followers: " + data.data.followers;
+  newFollowing.textContent = "Following: " + data.data.following;
+  newBio.textContent = "Bio: "  + data.data.bio;
+
   
+  newCard.appendChild(newImg);
+  newCard.appendChild(cardInfo);
+  cardInfo.appendChild(newH3);
+  cardInfo.appendChild(newUsername);
+  cardInfo.appendChild(newLocation);
+  cardInfo.appendChild(newProfile);
+  newProfile.appendChild(newProfileLink);
+  cardInfo.appendChild(newFollowers);
+  cardInfo.appendChild(newFollowing);
+  cardInfo.appendChild(newBio);
+  newCard.classList.add("card");
+  cardInfo.classList.add("card-info");
+  newH3.classList.add("name")
+  newUsername.classList.add("username")
+ 
+  
+
+  entryPoint.appendChild(newCard);
 
   return newCard;
 }
-
+const entryPoint =
+  document.querySelector(".cards");
 
 axios.get("https://api.github.com/users/mjs001")
 .then(response => {
-  response = Object.values(response.data)
-response.forEach(item => {
-  const eachNewCard = gitHubCard(item)
-  entryPoint.appendChild(eachNewCard)
+  console.log(response)
+ let responseData = response
+ entryPoint.appendChild(gitHubCard(responseData))
+ 
+})
 
-})
-})
 
 .catch(error => {
   console.log("the data was not returned, you have an error!", error)
 })
 
-const entryPoint =
-document.querySelector(".container");
 
-const followersArray = [];
 
-axios.get("https://api.github.com/users/mjs001/followers ")
-.then(response2 => {
-  response2 = Object.values(response2.data)
-response2.forEach(item2 => {
-  const eachNewCard2 = gitHubCard(item2)
-  entryPoint.appendChild(eachNewCard2)
-  response2.push(followersArray);
+const followersArray = [
+"mzstevens69",
+"ryankayne",
+"leachcoding",
+"phil-mac",
+"bseverino"
+];
+followersArray.forEach((eachPerson) =>{
+  axios.get("https://api.github.com/users/" + eachPerson)
+  .then(response => {
+      let eachFollowersC = gitHubCard(response)
+      entryPoint.appendChild(eachFollowersC)
+      
+  })
 })
-})
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
